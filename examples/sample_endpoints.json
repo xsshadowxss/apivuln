@@ -1,0 +1,133 @@
+{
+  "endpoints": [
+    {
+      "path": "/api/v1/users/{id}",
+      "method": "GET",
+      "params": {"id": "123"},
+      "description": "Get user by ID - test for BOLA/IDOR"
+    },
+    {
+      "path": "/api/v1/users",
+      "method": "GET",
+      "description": "List all users"
+    },
+    {
+      "path": "/api/v1/users",
+      "method": "POST",
+      "body": {
+        "username": "testuser",
+        "email": "test@example.com",
+        "password": "testpass123"
+      },
+      "description": "Create new user - test for mass assignment"
+    },
+    {
+      "path": "/api/v1/users/{id}",
+      "method": "PUT",
+      "params": {"id": "123"},
+      "body": {
+        "username": "updateduser",
+        "email": "updated@example.com"
+      },
+      "description": "Update user - test for BOLA and mass assignment"
+    },
+    {
+      "path": "/api/v1/users/{id}",
+      "method": "DELETE",
+      "params": {"id": "123"},
+      "description": "Delete user - test for BOLA"
+    },
+    {
+      "path": "/api/v1/auth/login",
+      "method": "POST",
+      "body": {
+        "username": "testuser",
+        "password": "testpass123"
+      },
+      "description": "Login endpoint - test for rate limiting and injection"
+    },
+    {
+      "path": "/api/v1/auth/register",
+      "method": "POST",
+      "body": {
+        "username": "newuser",
+        "email": "new@example.com",
+        "password": "newpass123"
+      },
+      "description": "Registration endpoint - test for rate limiting"
+    },
+    {
+      "path": "/api/v1/auth/reset-password",
+      "method": "POST",
+      "body": {
+        "email": "test@example.com"
+      },
+      "description": "Password reset - test for rate limiting"
+    },
+    {
+      "path": "/api/v1/profile",
+      "method": "GET",
+      "description": "Get current user profile - test for JWT vulnerabilities"
+    },
+    {
+      "path": "/api/v1/profile",
+      "method": "PUT",
+      "body": {
+        "name": "Updated Name",
+        "bio": "Updated bio"
+      },
+      "description": "Update profile - test for mass assignment"
+    },
+    {
+      "path": "/api/v1/orders/{id}",
+      "method": "GET",
+      "params": {"id": "1001"},
+      "description": "Get order by ID - test for BOLA"
+    },
+    {
+      "path": "/api/v1/orders",
+      "method": "POST",
+      "body": {
+        "product_id": 1,
+        "quantity": 2,
+        "address": "123 Test St"
+      },
+      "description": "Create order"
+    },
+    {
+      "path": "/api/v1/search",
+      "method": "GET",
+      "params": {"q": "test", "category": "all"},
+      "description": "Search endpoint - test for injection"
+    },
+    {
+      "path": "/api/v1/admin/users",
+      "method": "GET",
+      "description": "Admin endpoint - test for BFLA"
+    },
+    {
+      "path": "/api/v1/admin/settings",
+      "method": "GET",
+      "description": "Admin settings - test for BFLA"
+    },
+    {
+      "path": "/api/v1/admin/logs",
+      "method": "GET",
+      "description": "Admin logs - test for BFLA and info disclosure"
+    },
+    {
+      "path": "/api/v1/files/download",
+      "method": "GET",
+      "params": {"url": "https://example.com/file.pdf"},
+      "description": "File download - test for SSRF"
+    },
+    {
+      "path": "/api/v1/webhook",
+      "method": "POST",
+      "body": {
+        "callback_url": "https://example.com/callback"
+      },
+      "description": "Webhook registration - test for SSRF"
+    }
+  ]
+}

